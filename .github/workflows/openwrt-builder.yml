@@ -135,12 +135,17 @@ jobs:
 
     - name: Generate release tag
       id: tag
-      if: env.UPLOAD_RELEASE == 'true' && !cancelled()
+      shell: bash
       run: |
-        echo "release_tag=$(date +"%Y.%m.%d-%H%M")" >> $GITHUB_OUTPUT
-        touch release.txt
-        [ ${UPLOAD_GOFILE} = true && ${{ steps.gofile.outputs.url }} ] && echo "🔗 [GoFile](${{ steps.gofile.outputs.url }})" >> release.txt
-        echo "status=success" >> $GITHUB_OUTPUT
+        echo "release_tag=$(date +'%Y.%m.%d-%H%M')" >> "$GITHUB_OUTPUT"
+        : > release.txt
+        echo "status=success" >> "$GITHUB_OUTPUT"
+
+    - name: Append GoFile link
+      if: env.UPLOAD_GOFILE == 'true' && steps.gofile.outputs.url != ''
+      shell: bash
+      run: echo "🔗 [GoFile](${{ steps.gofile.outputs.url }})" >> release.txt
+
 
     - name: Upload firmware to release
       uses: softprops/action-gh-release@master
