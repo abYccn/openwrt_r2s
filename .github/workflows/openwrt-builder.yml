@@ -35,7 +35,15 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@main
-
+      
+    - name: Reclaim disk space with mathio/gha-cleanup
+      uses: mathio/gha-cleanup@v1  # 使用最新稳定版 v1
+      with:
+       remove-browsers: true  # 必开：移除浏览器（OpenWRT编译完全用不到，可释放约5GB）
+       verbose: true          # 必开：显示清理日志，便于排查是否生效
+ # ↑ 清理步骤结束 ↑
+ 
+ # 步骤：初始化编译环境
     - name: Initialization environment
       env:
         DEBIAN_FRONTEND: noninteractive
